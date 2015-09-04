@@ -7,6 +7,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	. "github.com/maximilien/bosh-softlayer-stemcells/common"
+
 	slclientfakes "github.com/maximilien/softlayer-go/client/fakes"
 
 	cmds "github.com/maximilien/bosh-softlayer-stemcells/cmds"
@@ -16,6 +18,7 @@ import (
 
 var _ = Describe("cleanup-stemcell command", func() {
 	var (
+		err                 error
 		cmd                 cmds.CommandInterface
 		cleanupStemcellsCmd *cleanup_stemcells.CleanupStemcellsCmd
 		fakeClient          *slclientfakes.FakeSoftLayerClient
@@ -124,7 +127,7 @@ var _ = Describe("cleanup-stemcell command", func() {
 				Expect(err).To(HaveOccurred())
 			})
 
-			It("fails CommandFlag is not cleanup-stemcells", func() {
+			It("fails when CommandFlag is not cleanup-stemcells", func() {
 				options.CommandFlag = "fake-command"
 				cmd = cleanup_stemcells.NewCleanupStemcellsCmd(options, fakeClient)
 
@@ -132,7 +135,7 @@ var _ = Describe("cleanup-stemcell command", func() {
 				Expect(err).To(HaveOccurred())
 			})
 
-			It("fails CommandFlag not passed", func() {
+			It("fails when CommandFlag not passed", func() {
 				options.CommandFlag = ""
 				cmd = cleanup_stemcells.NewCleanupStemcellsCmd(options, fakeClient)
 
@@ -140,7 +143,7 @@ var _ = Describe("cleanup-stemcell command", func() {
 				Expect(err).To(HaveOccurred())
 			})
 
-			It("fails NamePatternFlag not passed", func() {
+			It("fails when NamePatternFlag not passed", func() {
 				options.NamePatternFlag = ""
 				cmd = cleanup_stemcells.NewCleanupStemcellsCmd(options, fakeClient)
 
@@ -148,5 +151,150 @@ var _ = Describe("cleanup-stemcell command", func() {
 				Expect(err).To(HaveOccurred())
 			})
 		})
+	})
+
+	Describe("#Run", func() {
+		BeforeEach(func() {
+			fakeClient.DoRawHttpRequestResponse, err = ReadJsonTestFixtures("services", "SoftLayer_Account_Service_getBlockDeviceTemplateGroups_no_objects.json")
+			Expect(err).ToNot(HaveOccurred())
+		})
+
+		Context("when no VGBDT objects are found", func() {
+			It("does not issue any VGBDT delete and returns", func() {
+				err := cmd.Run()
+				Expect(err).ToNot(HaveOccurred())
+
+				Expect(fakeClient.DoRawHttpRequestResponseCount).To(Equal(1))
+			})
+		})
+
+		Context("when some VGBDT objects are found and they pass our filter", func() {
+			BeforeEach(func() {
+				vgdtgBytes, err := ReadJsonTestFixtures("services", "SoftLayer_Account_Service_getBlockDeviceTemplateGroups_one_object.json")
+				Expect(err).ToNot(HaveOccurred())
+
+				deleteObjectBytes, err := ReadJsonTestFixtures("services", "SoftLayer_Virtual_Guest_Block_Device_Template_Group_Service_deleteObject_success.json")
+				Expect(err).ToNot(HaveOccurred())
+
+				fakeClient.DoRawHttpRequestResponses = [][]byte{vgdtgBytes, deleteObjectBytes}
+			})
+
+			Context("when one VGBDT object passes filter", func() {
+				It("does issue one VGBDT delete and returns", func() {
+					err := cmd.Run()
+					Expect(err).ToNot(HaveOccurred())
+
+					Expect(fakeClient.DoRawHttpRequestResponseCount).To(Equal(2))
+				})
+			})
+		})
+	})
+
+	Describe("#FilterVGBDTG", func() {
+		BeforeEach(func() {
+			vgdtgBytes, err := ReadJsonTestFixtures("services", "SoftLayer_Account_Service_getBlockDeviceTemplateGroups_some_objects.json")
+			Expect(err).ToNot(HaveOccurred())
+
+			fakeClient.DoRawHttpRequestResponse = vgdtgBytes
+		})
+
+		Describe("#FilterVGBDTGTag", func() {
+			Context("when no VGBDT objects are filtered out", func() {
+				It("succeeds when all VGBDT objects are returned", func() {
+					accountService, err := fakeClient.GetSoftLayer_Account_Service()
+					Expect(err).ToNot(HaveOccurred())
+
+					vgbdtgObjects, err := accountService.GetBlockDeviceTemplateGroups()
+					Expect(err).ToNot(HaveOccurred())
+
+					filteredObjects := cleanup_stemcells.FilterVGBDTGTag(vgbdtgObjects, "NotSHIPIT")
+					Expect(err).ToNot(HaveOccurred())
+
+					Expect(len(filteredObjects)).To(Equal(4))
+				})
+			})
+
+			Context("when some VGBDT objects are filtered out", func() {
+				It("succeeds when some VGBDT objects are returned", func() {
+					accountService, err := fakeClient.GetSoftLayer_Account_Service()
+					Expect(err).ToNot(HaveOccurred())
+
+					vgbdtgObjects, err := accountService.GetBlockDeviceTemplateGroups()
+					Expect(err).ToNot(HaveOccurred())
+
+					filteredObjects := cleanup_stemcells.FilterVGBDTGTag(vgbdtgObjects, "SHIPIT")
+					Expect(err).ToNot(HaveOccurred())
+
+					Expect(len(filteredObjects)).To(Equal(2))
+				})
+			})
+		})
+
+		Describe("#FilterVGBDTG by date", func() {
+			Context("when no VGBDT objects are filtered out", func() {
+				It("succeeds when all VGBDT objects are returned", func() {
+					accountService, err := fakeClient.GetSoftLayer_Account_Service()
+					Expect(err).ToNot(HaveOccurred())
+
+					vgbdtgObjects, err := accountService.GetBlockDeviceTemplateGroups()
+					Expect(err).ToNot(HaveOccurred())
+
+					filteredObjects, err := cleanup_stemcells.FilterVGBDTGDate(vgbdtgObjects, time.Now().Format(time.UnixDate))
+					Expect(err).ToNot(HaveOccurred())
+
+					Expect(len(filteredObjects)).To(Equal(4))
+				})
+			})
+
+			Context("when some VGBDT objects are filtered out", func() {
+				It("succeeds when some VGBDT objects are returned", func() {
+					accountService, err := fakeClient.GetSoftLayer_Account_Service()
+					Expect(err).ToNot(HaveOccurred())
+
+					vgbdtgObjects, err := accountService.GetBlockDeviceTemplateGroups()
+					Expect(err).ToNot(HaveOccurred())
+
+					filterDate := time.Date(2015, time.July, 10, 0, 0, 0, 0, time.UTC)
+					filteredObjects, err := cleanup_stemcells.FilterVGBDTGDate(vgbdtgObjects, filterDate.Format(time.UnixDate))
+					Expect(err).ToNot(HaveOccurred())
+
+					Expect(len(filteredObjects)).To(Equal(2))
+				})
+
+			})
+		})
+
+		Describe("FilterVGBDTGName", func() {
+			Context("when some VGBDT objects match the pattern", func() {
+				It("succeeds when some VGBT objects are returned", func() {
+					accountService, err := fakeClient.GetSoftLayer_Account_Service()
+					Expect(err).ToNot(HaveOccurred())
+
+					vgbdtgObjects, err := accountService.GetBlockDeviceTemplateGroups()
+					Expect(err).ToNot(HaveOccurred())
+
+					filteredObjects, err := cleanup_stemcells.FilterVGBDTGName(vgbdtgObjects, "ubuntu-10.04-bosh-[0-9][0-9][0-9]+-IEM-itcs104-dea-stemcell")
+					Expect(err).ToNot(HaveOccurred())
+
+					Expect(len(filteredObjects)).To(Equal(3))
+				})
+			})
+
+			Context("when all VGBDT objects match the pattern", func() {
+				It("succeeds when no VGBT objects are returned", func() {
+					accountService, err := fakeClient.GetSoftLayer_Account_Service()
+					Expect(err).ToNot(HaveOccurred())
+
+					vgbdtgObjects, err := accountService.GetBlockDeviceTemplateGroups()
+					Expect(err).ToNot(HaveOccurred())
+
+					filteredObjects, err := cleanup_stemcells.FilterVGBDTGName(vgbdtgObjects, "ubuntu-10.04-bosh-[0-9]*-IEM-itcs104-dea-stemcell")
+					Expect(err).ToNot(HaveOccurred())
+
+					Expect(len(filteredObjects)).To(Equal(4))
+				})
+			})
+		})
+
 	})
 })
