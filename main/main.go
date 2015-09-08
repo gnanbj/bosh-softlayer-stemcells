@@ -193,7 +193,7 @@ func init() {
 	flag.StringVar(&options.OsNameFlag, "os-name", "ubuntu-trusty", "the name of the operating system")
 
 	flag.StringVar(&options.NamePatternFlag, "name-pattern", "", "the pattern (regex) for the name of the stemcell")
-	flag.StringVar(&options.LastValidDateFlag, "last-valid-date", "", "the last valid date at which anything older will be deleted")
+	flag.StringVar(&options.LastValidDateFlag, "last-valid-date", "", "the last valid date at which anything older will be deleted. format: '<year>-<month>-<day>' or 'year/month/day', e.g.: '2015-12-31' or '2015/12/31'")
 	flag.StringVar(&options.ShipItTagFlag, "shipit-tag", "SHIPIT", "the tag to differentiate shipped and unshipped stemcells")
 
 }

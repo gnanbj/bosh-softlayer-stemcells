@@ -89,12 +89,34 @@ func (cmd *CleanupStemcellsCmd) Run() error {
 // Utility methods
 
 func (cmd *CleanupStemcellsCmd) FilterVGBDTG(vgbdtgObjects []sldatatypes.SoftLayer_Virtual_Guest_Block_Device_Template_Group) ([]sldatatypes.SoftLayer_Virtual_Guest_Block_Device_Template_Group, error) {
-	//filter
-	// 1. by shipit tag
-	// 2. by date
-	// 3. by name
 
-	return vgbdtgObjects, nil
+	toBeDeletedObjects := []sldatatypes.SoftLayer_Virtual_Guest_Block_Device_Template_Group{}
+	var err error = nil
+
+	if cmd.options.ShipItTagFlag == "" {
+		cmd.ShipItTag = "SHIPIT"
+	} else {
+		cmd.ShipItTag = cmd.options.ShipItTagFlag
+	}
+
+	toBeDeletedObjects = FilterVGBDTGTag(vgbdtgObjects, cmd.ShipItTag)
+
+	if cmd.options.LastValidDateFlag == "" {
+		cmd.LastValidDate = time.Now().Format("2006-01-_2")
+	} else {
+		cmd.LastValidDate = cmd.options.LastValidDateFlag
+	}
+	toBeDeletedObjects, err = FilterVGBDTGDate(toBeDeletedObjects, cmd.LastValidDate)
+	if err != nil {
+		return toBeDeletedObjects, errors.New(fmt.Sprintf("Filtering VGBDTG objects by date, message: %s", err.Error()))
+	}
+
+	toBeDeletedObjects, err = FilterVGBDTGName(toBeDeletedObjects, cmd.options.NamePatternFlag)
+	if err != nil {
+		return toBeDeletedObjects, errors.New(fmt.Sprintf("Filtering VGBDTG objects by name, message: %s", err.Error()))
+	}
+
+	return toBeDeletedObjects, nil
 }
 
 func FilterVGBDTGTag(vgbdtgObjects []sldatatypes.SoftLayer_Virtual_Guest_Block_Device_Template_Group, tag string) []sldatatypes.SoftLayer_Virtual_Guest_Block_Device_Template_Group {
@@ -112,9 +134,12 @@ func FilterVGBDTGTag(vgbdtgObjects []sldatatypes.SoftLayer_Virtual_Guest_Block_D
 func FilterVGBDTGDate(vgbdtgObjects []sldatatypes.SoftLayer_Virtual_Guest_Block_Device_Template_Group, date string) ([]sldatatypes.SoftLayer_Virtual_Guest_Block_Device_Template_Group, error) {
 	filteredObjects := []sldatatypes.SoftLayer_Virtual_Guest_Block_Device_Template_Group{}
 
-	filterDate, err := time.Parse(time.UnixDate, date)
+	filterDate, err := time.Parse("2006-01-_2", date)
 	if err != nil {
-		return filteredObjects, errors.New(fmt.Sprintf("Converting Date into time object, message: %s", err.Error()))
+		filterDate, err = time.Parse("2006/01/_2", date)
+		if err != nil {
+			return filteredObjects, errors.New(fmt.Sprintf("Converting date string into time object, message: %s", err.Error()))
+		}
 	}
 
 	for _, object := range vgbdtgObjects {
@@ -149,7 +174,7 @@ func FilterVGBDTGName(vgbdtgObjects []sldatatypes.SoftLayer_Virtual_Guest_Block_
 
 func (cmd *CleanupStemcellsCmd) defaultOptionalFlags() {
 	if cmd.options.LastValidDateFlag == "" {
-		cmd.LastValidDate = time.Now().Format(time.UnixDate)
+		cmd.LastValidDate = time.Now().Format("2006-01-_2")
 	}
 
 	if cmd.options.ShipItTagFlag == "" || cmd.options.ShipItTagFlag == "SHIPIT" {
