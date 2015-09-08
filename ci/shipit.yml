@@ -1,0 +1,10 @@
+---
+platform: linux
+image: docker:///swayr/slci
+
+inputs:
+  - name: bosh-softlayer-stemcells
+  - name: stemcell-info
+
+run:
+  path: gopath/src/github.com/maximilien/bosh-softlayer-stemcells/ci/scripts/cleanup-stemcells

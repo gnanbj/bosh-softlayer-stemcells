@@ -87,6 +87,11 @@ resources:
   source:
     name: bosh-vsphere-esxi-ubuntu-trusty-go_agent
 
+- name: timer-2weeks
+  type: time
+  source:
+    interval: 336h
+
 jobs:
 - name: bosh-stemcell
   plan:
@@ -207,7 +212,7 @@ jobs:
   plan:
   - get: bosh-softlayer-stemcells
     trigger: true
-    passed: [create-light-stemcell]
+    passed: [shipit]
   - task: remove-expiration-tag-vhd
     file: bosh-softlayer-stemcells/ci/remove-expiration.yml
     config:
@@ -268,6 +273,22 @@ jobs:
         SL_USERNAME: {{SL_USERNAME}}
         SL_API_KEY: {{SL_API_KEY}}
 
+- name: cleanup-stemcells
+  plan:
+  - get: bosh-softlayer-stemcells
+  - get: timer-2weeks
+    trigger: true
+  - task: cleanup-stemcells-VGBTG
+    file: bosh-softlayer-stemcells/ci/cleanup-stemcells.yml
+
+- name: shipit
+  plan:
+  - get: bosh-softlayer-stemcells
+  - get: stemcell-info
+    passed: [import-stemcell]
+  - task: shipit-stemcells-and-cpi
+    file: bosh-softlayer-stemcells/ci/shipit.yml
+
 groups:
 - name: all
   jobs:
@@ -307,3 +328,8 @@ groups:
   jobs:
   - sl-go-unit
   - sl-go-integration
+
+- name:shipit
+  jobs:
+  - remove-expiration-tag
+  - cleanup-stemcells
