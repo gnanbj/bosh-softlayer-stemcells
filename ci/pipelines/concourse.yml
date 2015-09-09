@@ -331,5 +331,6 @@ groups:
 
 - name:shipit
   jobs:
+  - shipit
   - remove-expiration-tag
   - cleanup-stemcells
