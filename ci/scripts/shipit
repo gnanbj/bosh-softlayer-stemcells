@@ -4,7 +4,7 @@
   set -e
 
   echo -e "\n Getting VGBTG id"
-  vgbtgID= `cat stemcell-info/stemcell-info.json | grep '"id":' | cut -d ":" -f2 | cut -d "," -f1`
+  vgbtgID=`cat stemcell-info/stemcell-info.json | grep '"id":' | cut -d ":" -f2 | cut -d "," -f1`
 
   echo -e "\n Connecting to Softlayer"
   touch sl-config
