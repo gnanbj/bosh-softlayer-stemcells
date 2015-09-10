@@ -4,18 +4,17 @@
   set -e
 
   echo -e "\n Getting VGBTG id"
-  # vgbtgID=`cat stemcell-info/stemcell-info.json | grep '"id":' | cut -d ":" -f2 | cut -d "," -f1`
+  vgbtgID=`cat stemcell-info/stemcell-info.json | grep '"id":' | cut -d ":" -f2 | cut -d "," -f1`
 
   echo -e "\n Connecting to Softlayer"
-  touch sl-config
-  echo "username = $SL_USERNAME" >> sl-config
-  echo "api_key = $SWIFT_API_KEY" >> sl-config
-  echo "endpoint_url = " >> sl-config
-  echo "timeout = 40"
-
-  slcli --config sl-config config
+  touch .softlayer
+  echo "[softlayer]" >> .softlayer
+  echo "username = $SL_USERNAME" >> .softlayer
+  echo "api_key = $SWIFT_API_KEY" >> .softlayer
+  echo "endpoint_url = " >> .softlayer
+  echo "timeout = 40" >> .softlayer
 
   echo -e "\n Tagging the VGBTG with SHIPIT"
-  slcli image edit --note "SHIPIT" $vgbtgID
+  slcli --config .softlayer image edit --note "SHIPIT" vgbtgID
 
 )
