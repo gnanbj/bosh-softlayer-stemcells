@@ -284,10 +284,20 @@ jobs:
 - name: shipit
   plan:
   - get: bosh-softlayer-stemcells
+  - get: final-release
+    passed: [cpi-release-shipit]
+  - get: version
+    passed: [cpi-release-shipit]
   - get: stemcell-info
     passed: [import-stemcell]
   - task: shipit-stemcells-and-cpi
     file: bosh-softlayer-stemcells/ci/shipit.yml
+    config:
+      params:
+        SL_USERNAME: {{SL_USERNAME}}
+        SL_API_KEY: {{SL_API_KEY}}
+        S3_ACCESS_KEY: {{s3-access-key-id}}
+        S3_SECRET_KEY: {{s3-secret-access-key}}
 
 groups:
 - name: all

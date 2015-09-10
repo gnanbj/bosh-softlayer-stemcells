@@ -17,4 +17,10 @@
   echo -e "\n Tagging the VGBTG with SHIPIT"
   slcli --config .softlayer image edit --note "SHIPIT" $vgbtgID
 
+  version=`cat version/number`
+  filename="bosh-softlayer-cpi-release"
+
+  echo -e "\n Uploading to S3 bucket: "
+  s3cmd put final-release/"$filename-$version.tgz" s3://bosh-softlayer-cpi-stemcells --access_key=$S3_ACCESS_KEY --secret_key=$S3_SECRET_KEY
+
 )
