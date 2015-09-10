@@ -40,9 +40,9 @@ func (cmd *CleanupStemcellsCmd) Options() common.Options {
 }
 
 func (cmd *CleanupStemcellsCmd) CheckOptions() error {
-	if cmd.options.CommandFlag != "cleanup-stemcells" {
-		return errors.New(fmt.Sprintf("CommandFlag (%s) is incorrect, is not cleanup-stemcells", cmd.options.CommandFlag))
-	}
+	// if cmd.options.CommandFlag != "cleanup-stemcells" {
+	// 	return errors.New(fmt.Sprintf("CommandFlag (%s) is incorrect, is not cleanup-stemcells", cmd.options.CommandFlag))
+	// }
 
 	if cmd.options.NamePatternFlag == "" {
 		return errors.New("NamePatternFlag not passed")

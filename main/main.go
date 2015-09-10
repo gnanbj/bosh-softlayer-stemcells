@@ -45,7 +45,7 @@ func main() {
 		importImageCmd()
 	case "light-stemcell":
 		lightStemcellCmd()
-	case "cleanup_stemcells":
+	case "cleanup-stemcells":
 		cleanupStemcellsCmd()
 	default:
 		fmt.Println("SoftLayer BOSH Stemcells Utility")

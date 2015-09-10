@@ -127,21 +127,21 @@ var _ = Describe("cleanup-stemcell command", func() {
 				Expect(err).To(HaveOccurred())
 			})
 
-			It("fails when CommandFlag is not cleanup-stemcells", func() {
-				options.CommandFlag = "fake-command"
-				cmd = cleanup_stemcells.NewCleanupStemcellsCmd(options, fakeClient)
+			// It("fails when CommandFlag is not cleanup-stemcells", func() {
+			// 	options.CommandFlag = "fake-command"
+			// 	cmd = cleanup_stemcells.NewCleanupStemcellsCmd(options, fakeClient)
 
-				err := cmd.CheckOptions()
-				Expect(err).To(HaveOccurred())
-			})
+			// 	err := cmd.CheckOptions()
+			// 	Expect(err).To(HaveOccurred())
+			// })
 
-			It("fails when CommandFlag not passed", func() {
-				options.CommandFlag = ""
-				cmd = cleanup_stemcells.NewCleanupStemcellsCmd(options, fakeClient)
+			// It("fails when CommandFlag not passed", func() {
+			// 	options.CommandFlag = ""
+			// 	cmd = cleanup_stemcells.NewCleanupStemcellsCmd(options, fakeClient)
 
-				err := cmd.CheckOptions()
-				Expect(err).To(HaveOccurred())
-			})
+			// 	err := cmd.CheckOptions()
+			// 	Expect(err).To(HaveOccurred())
+			// })
 
 			It("fails when NamePatternFlag not passed", func() {
 				options.NamePatternFlag = ""
