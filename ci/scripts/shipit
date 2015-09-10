@@ -15,6 +15,6 @@
   echo "timeout = 40" >> .softlayer
 
   echo -e "\n Tagging the VGBTG with SHIPIT"
-  slcli --config .softlayer image edit --note "SHIPIT" vgbtgID
+  slcli --config .softlayer image edit --note "SHIPIT" $vgbtgID
 
 )
