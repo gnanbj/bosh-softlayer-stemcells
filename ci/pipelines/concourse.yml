@@ -289,7 +289,7 @@ jobs:
   - get: version
     passed: [cpi-release-shipit]
   - get: stemcell-info
-    passed: [import-stemcell]
+    passed: [create-light-stemcell]
   - task: shipit-stemcells-and-cpi
     file: bosh-softlayer-stemcells/ci/shipit.yml
     config:

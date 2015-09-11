@@ -5,6 +5,7 @@ image: docker:///swayr/slci
 inputs:
   - name: bosh-softlayer-stemcells
   - name: final-release
+  - name: version
   - name: stemcell-info
 
 run:
