@@ -280,6 +280,10 @@ jobs:
     trigger: true
   - task: cleanup-stemcells-VGBTG
     file: bosh-softlayer-stemcells/ci/cleanup-stemcells.yml
+    config:
+      params:
+        SL_USERNAME: {{SL_USERNAME}}
+        SL_API_KEY: {{SL_API_KEY}}
 
 - name: shipit
   plan:

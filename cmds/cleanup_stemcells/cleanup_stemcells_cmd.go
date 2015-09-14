@@ -74,8 +74,8 @@ func (cmd *CleanupStemcellsCmd) Run() error {
 		return errors.New(fmt.Sprintf("Getting softlayer VGBDTG service, message: %s", err.Error()))
 	}
 
-	for object, _ := range toBeDeletedObjects {
-		_, err := vgbdtgService.DeleteObject(object)
+	for _, object := range toBeDeletedObjects {
+		_, err := vgbdtgService.DeleteObject(object.Id)
 		if err != nil {
 			return errors.New(fmt.Sprintf("Deleting VGBDTG object, message: %s", err.Error()))
 		}
