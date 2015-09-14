@@ -12,6 +12,6 @@
   go build -o out/sl_stemcells github.com/maximilien/bosh-softlayer-stemcells/main
 
   echo -e "\n Softlayer Issues Deletes for VGBTG files older than today"
-  out/sl_stemcells --name-pattern "Template created from imported bosh-stemcell-3063-softlayer.vhd" cleanup-stemcells
+  out/sl_stemcells --name-pattern "Template created from imported bosh-stemcell-3062-softlayer.vhd" cleanup-stemcells
 
 )
