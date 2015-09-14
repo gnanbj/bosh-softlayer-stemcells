@@ -23,18 +23,18 @@
   echo -e "\n Uploading to S3 bucket: "
   s3cmd put final-release/"$filename-$version.tgz" s3://bosh-softlayer-cpi-stemcells --access_key=$S3_ACCESS_KEY --secret_key=$S3_SECRET_KEY
 
-  echo -e "\n Email Confirmation about shipped CPI release and stemcell"
+  # echo -e "\n Email Confirmation about shipped CPI release and stemcell"
 
-  echo -e "\n Get stemcell version..."
-  s3cmd get s3://bosh-softlayer-cpi-stemcells/stemcell-version stemcell-version --access_key=$S3_ACCESS_KEY --secret_key=$S3_SECRET_KEY
-  STEMCELL_VERSION=`cat stemcell-version`
+  # echo -e "\n Get stemcell version..."
+  # s3cmd get s3://bosh-softlayer-cpi-stemcells/stemcell-version stemcell-version --access_key=$S3_ACCESS_KEY --secret_key=$S3_SECRET_KEY
+  # STEMCELL_VERSION=`cat stemcell-version`
 
-  touch email.txt
-  echo -e 'Subject: SHIPIT job has finished' >> email.txt
-  echo -e 'Bosh softlayer cpi release, "$filename-$version.tgz", has been uploaded to the S3 bucket bosh-softlayer-cpi-stemcells'
-  echo -e 'The expiration tag of VHD file: bosh-stemcell-${STEMCELL_VERSION}-softlayer.vhd will be removed'
-  echo -e 'The Virtual Guest Block Template Group file: Template created from imported bosh-stemcell-$STEMCELL_VERSION-softlayer.vhd, has been tagged with SHIPIT and will not be deleted.'
-  mail -s "SHIPIT Job has Finished" srepaku@us.ibm.com
+  # touch email.txt
+  # echo -e 'Subject: SHIPIT job has finished' >> email.txt
+  # echo -e 'Bosh softlayer cpi release, "$filename-$version.tgz", has been uploaded to the S3 bucket bosh-softlayer-cpi-stemcells'
+  # echo -e 'The expiration tag of VHD file: bosh-stemcell-${STEMCELL_VERSION}-softlayer.vhd will be removed'
+  # echo -e 'The Virtual Guest Block Template Group file: Template created from imported bosh-stemcell-$STEMCELL_VERSION-softlayer.vhd, has been tagged with SHIPIT and will not be deleted.'
+  # mail -s "SHIPIT Job has Finished" srepaku@us.ibm.com
 
 
 )
