@@ -35,12 +35,12 @@ func main() {
 
 	flag.Parse()
 
-	if options.HelpFlag || options.LongHelpFlag || len(flag.Args()) == 0 {
+	if options.HelpFlag || options.LongHelpFlag || len(os.Args) == 0 {
 		usage()
 		return
 	}
 
-	switch flag.Args()[0] {
+	switch options.CommandFlag {
 	case "import-image":
 		importImageCmd()
 	case "light-stemcell":
@@ -177,7 +177,7 @@ func init() {
 	flag.StringVar(&options.CommandFlag, "c", "", "the command, one of: import-image, light-stemcell, or cleanup-stemcells")
 
 	flag.BoolVar(&options.HelpFlag, "h", false, "prints the usage")
-	flag.BoolVar(&options.LongHelpFlag, "-help", false, "prints the usage")
+	flag.BoolVar(&options.LongHelpFlag, "help", false, "prints the usage")
 
 	flag.StringVar(&options.NameFlag, "name", "", "the name used by the specified command")
 	flag.StringVar(&options.NoteFlag, "note", "", "the note to be applied to the imported template")
