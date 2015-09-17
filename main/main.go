@@ -200,7 +200,7 @@ func init() {
 
 func usage() {
 	usageString := `
-usage: bosh-softlayer-stemcells -c import-image [--name <template-name>] [--note <import note>] 
+usage: bosh-softlayer-stemcells -c <command> [--name <template-name>] [--note <import note>] 
        --os-ref-code <OsRefCode> --uri <swiftURI>
 
   -h | --help   prints the usage
@@ -219,6 +219,24 @@ usage: bosh-softlayer-stemcells -c import-image [--name <template-name>] [--note
                      WIN_2012-STD_64
   --uri            the URI for an object storage object (.vhd/.iso file)
                    swift://<ObjectStorageAccountName>@<clusterName>/<containerName>/<fileName.(vhd|iso)>
+  LIGHT-STEMCELL:
+
+  -c light-stemcell         the light stemcell command
+  --type                    two possible SoftLayer light stemcells: VGBDGT (default) or VDI
+  --path                    the path for the location of the light stemcell file created
+  --version                 the light stemcell version
+  --stemcell-info-filename  the path and filename to a JSON file containing the ID & UUID for a SoftLayer stemcell
+  --infrastructure          the light stemcell infrastructure, defaults to softlayer
+  --hypervisor              the light stemcell version, defaults to esxi
+  --os-name                 the name of the operating system, defaults to ubuntu-trusty
+
+  CLEANUP-STEMCELLS:
+
+  -c cleanup-stemcells  the cleanup stemcells command
+  --name-pattern        the pattern (regex) for the name of the stemcell
+  --last-valid-date     the last valid date at which anything older will be deleted.
+						 format: '<year>-<month>-<day>' or 'year/month/day', e.g.: '2015-12-31' or '2015/12/31', defaults to today's date.
+  --shipit-tag          the tag to differentiate shipped and unshipped stemcells, defaults to SHIPIT
     `
 
 	fmt.Println(fmt.Sprintf("%s\nVersion %s", usageString, VERSION))

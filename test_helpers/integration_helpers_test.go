@@ -1,7 +1,6 @@
 package test_helpers_test
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -23,7 +22,7 @@ var _ = Describe("Helper Functions for running Integration Tests", func() {
 			Expect(err).ToNot(HaveOccurred())
 
 			Expect(string(output)).To(ContainSubstring(`
-usage: bosh-softlayer-stemcells -c import-image [--name <template-name>] [--note <import note>] 
+usage: bosh-softlayer-stemcells -c <command> [--name <template-name>] [--note <import note>] 
        --os-ref-code <OsRefCode> --uri <swiftURI>
 
   -h | --help   prints the usage
@@ -54,7 +53,6 @@ usage: bosh-softlayer-stemcells -c import-image [--name <template-name>] [--note
 				output, err := test_helpers.RunSLStemcells(rootPath, []string{"-c", "cleanup-stemcells", "--name-pattern", "fake-name"})
 				Expect(err).ToNot(HaveOccurred())
 
-				err = ioutil.WriteFile("output_command", []byte(output), 0644)
 				Expect(string(output)).To(ContainSubstring("Total time:"))
 
 			})
