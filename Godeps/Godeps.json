@@ -7,33 +7,33 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/maximilien/softlayer-go/client",
-			"Comment": "v0.2.0-166-gca6a8d3",
-			"Rev": "ca6a8d359b12308a08800fc1f8d0a730e7db3725"
+			"Comment": "v0.2.0-169-ge5666c7",
+			"Rev": "e5666c709cfbb4abeea98211ca9ecafaeb5ace8e"
 		},
 		{
 			"ImportPath": "github.com/maximilien/softlayer-go/common",
-			"Comment": "v0.2.0-166-gca6a8d3",
-			"Rev": "ca6a8d359b12308a08800fc1f8d0a730e7db3725"
+			"Comment": "v0.2.0-169-ge5666c7",
+			"Rev": "e5666c709cfbb4abeea98211ca9ecafaeb5ace8e"
 		},
 		{
 			"ImportPath": "github.com/maximilien/softlayer-go/data_types",
-			"Comment": "v0.2.0-166-gca6a8d3",
-			"Rev": "ca6a8d359b12308a08800fc1f8d0a730e7db3725"
+			"Comment": "v0.2.0-169-ge5666c7",
+			"Rev": "e5666c709cfbb4abeea98211ca9ecafaeb5ace8e"
 		},
 		{
 			"ImportPath": "github.com/maximilien/softlayer-go/services",
-			"Comment": "v0.2.0-166-gca6a8d3",
-			"Rev": "ca6a8d359b12308a08800fc1f8d0a730e7db3725"
+			"Comment": "v0.2.0-169-ge5666c7",
+			"Rev": "e5666c709cfbb4abeea98211ca9ecafaeb5ace8e"
 		},
 		{
 			"ImportPath": "github.com/maximilien/softlayer-go/softlayer",
-			"Comment": "v0.2.0-166-gca6a8d3",
-			"Rev": "ca6a8d359b12308a08800fc1f8d0a730e7db3725"
+			"Comment": "v0.2.0-169-ge5666c7",
+			"Rev": "e5666c709cfbb4abeea98211ca9ecafaeb5ace8e"
 		},
 		{
 			"ImportPath": "github.com/maximilien/softlayer-go/test_helpers",
-			"Comment": "v0.2.0-166-gca6a8d3",
-			"Rev": "ca6a8d359b12308a08800fc1f8d0a730e7db3725"
+			"Comment": "v0.2.0-169-ge5666c7",
+			"Rev": "e5666c709cfbb4abeea98211ca9ecafaeb5ace8e"
 		},
 		{
 			"ImportPath": "github.com/onsi/ginkgo",
