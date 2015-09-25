@@ -4,6 +4,7 @@ image: docker:///swayr/slci
 
 inputs:
   - name: timer-10sec
+  - name: bosh-softlayer-stemcells
 
 run:
   path: bosh-softlayer-stemcells/ci/scripts/helloWorld
