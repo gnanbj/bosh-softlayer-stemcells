@@ -26,7 +26,7 @@
   echo -e "\n Build stemcell, then upload to S3 bucket..."
   vagrant ssh -c "
     cd /bosh
-    bundle exec rake stemcell:build[vsphere,esxi,ubuntu,trusty,go,bosh-os-images,bosh-ubuntu-trusty-os-image.tgz]
+    bundle exec rake stemcell:build[softlayer,hyperv,ubuntu,trusty,go,bosh-os-images,bosh-ubuntu-trusty-os-image.tgz]
     s3cmd put /bosh/tmp/*.tgz s3://bosh-softlayer-cpi-stemcells -c /vagrant/.s3cfg
   " remote
 
