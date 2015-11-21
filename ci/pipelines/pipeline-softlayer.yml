@@ -3,8 +3,9 @@ jobs:
 - name: new-version
   plan:
   - get: published-stemcell
-    trigger: true
   - get: bosh-src
+  - get: bosh-softlayer-stemcells
+    trigger: true
   - task: make-version
     file: bosh-src/ci/pipelines/stemcells/tasks/make-stemcell-version.yml
   - put: stemcell-version
@@ -17,6 +18,7 @@ jobs:
   - get: stemcell-version
     passed: [new-version]
   - get: bosh-softlayer-stemcells
+    passed: [new-version]
     trigger: true
   - get: bosh-softlayer-private
     trigger: true
@@ -26,7 +28,6 @@ jobs:
       params:
         BOSH_AWS_ACCESS_KEY_ID:     {{aws_builder_access_key}}
         BOSH_AWS_SECRET_ACCESS_KEY: {{aws_builder_secret_access_key}}
-        BOSH_KEYPAIR_NAME:          {{aws_builder_keypair_name}}
         BOSH_PRIVATE_KEY:           {{aws_builder_private_key}}
         IAAS: softlayer
         HYPERVISOR: hyperv
@@ -38,6 +39,9 @@ jobs:
 - name: promote
   plan:
   - get: stemcell-version
+    passed: [build-ubuntu-trusty]
+    trigger: true
+  - get: bosh-softlayer-stemcells
     passed: [build-ubuntu-trusty]
     trigger: true
   - get: candidate-stemcell-ubuntu-trusty
@@ -177,6 +181,14 @@ resources:
     bucket: {{s3_final_stemcell_bucket_name}}
     access_key_id: {{aws_builder_access_key}}
     secret_access_key: {{aws_builder_secret_access_key}}
+
+- name: stemcell-info
+  type: s3
+  source:
+    access_key_id: {{aws_builder_access_key}}
+    bucket: {{s3_softlayer_light_stemcell_bucket_name}}
+    secret_access_key: {{aws_builder_secret_access_key}}
+    versioned_file: stemcell-info.json
 
 - name: light-stemcell-for-softlayer
   type: s3

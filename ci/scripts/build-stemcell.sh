@@ -37,6 +37,9 @@ cd bosh-stemcell
 
 set_up_vagrant_private_key
 
+echo -e "\n Copy s3cfg to vagrant shared directory..."
+cp ../../bosh-softlayer-private/.s3cfg .
+
 vagrant up remote --provider=aws
 
 vagrant ssh -c "
