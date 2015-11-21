@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+(
 set -e -x
 
 trap clean_vagrant EXIT
@@ -35,3 +36,4 @@ mkdir ../../out
 
 vagrant scp remote:/mnt/stemcells/$IAAS/$HYPERVISOR/$OS_NAME/work/work/*.tgz ../../out/
 
+)
