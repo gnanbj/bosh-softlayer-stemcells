@@ -13,7 +13,7 @@
   build_num=$(cat stemcell-version/number | cut -f1 -d.)
 
   echo -e "\n Navigate to vagrant directory..."
-  cd bosh/bosh-stemcell
+  cd bosh-src/bosh-stemcell
 
   echo -e "\n Copy s3cfg to vagrant shared directory..."
   cp ../../bosh-softlayer-private/.s3cfg .
