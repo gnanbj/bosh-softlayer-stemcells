@@ -13,7 +13,7 @@ jobs:
 - name: build-ubuntu-trusty
   plan:
   - get: bosh-src
-    passed: [new-version]
+    trigger: true
   - get: stemcell-version
     passed: [new-version]
   - get: bosh-softlayer-stemcells
