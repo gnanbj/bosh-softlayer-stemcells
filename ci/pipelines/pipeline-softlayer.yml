@@ -12,22 +12,22 @@ jobs:
 
 - name: build-ubuntu-trusty
   plan:
-  - get: bosh-src
-    trigger: true
-  - get: stemcell-version
-    passed: [new-version]
-  - get: bosh-softlayer-stemcells
-    passed: [new-version]
-    trigger: true
-  - get: bosh-softlayer-private
-    trigger: true
+  - aggregate:
+    - get: bosh-src
+      trigger: true
+    - get: stemcell-version
+      passed: [new-version]
+    - get: bosh-softlayer-stemcells
+      passed: [new-version]
+      trigger: true
+    - get: bosh-softlayer-private
+      trigger: true
   - task: build
     file: bosh-softlayer-stemcells/ci/build-stemcell.yml
     config:
       params:
         BOSH_AWS_ACCESS_KEY_ID:     {{aws_builder_access_key}}
         BOSH_AWS_SECRET_ACCESS_KEY: {{aws_builder_secret_access_key}}
-        BOSH_PRIVATE_KEY:           {{aws_builder_private_key}}
         IAAS: softlayer
         HYPERVISOR: hyperv
         OS_NAME: ubuntu

@@ -519,7 +519,7 @@ resources:
 - name: vsphere-stemcell
   type: bosh-io-stemcell
   source:
-    name: bosh-softlayer-hyperv-ubuntu-trusty-go_agent
+    name: bosh-vsphere-esxi-ubuntu-trusty-go_agent
     tarball: false
 - name: timer-2weeks
   type: time
