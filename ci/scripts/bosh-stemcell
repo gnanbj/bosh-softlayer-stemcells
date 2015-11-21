@@ -19,9 +19,6 @@ cd bosh-src
 
 cd bosh-stemcell
 
-echo -e "\n Copy s3cfg to vagrant shared directory..."
-cp ../../bosh-softlayer-private/.s3cfg .
-
 vagrant up remote --provider=aws
 
 vagrant ssh -c "
@@ -34,4 +31,7 @@ vagrant ssh -c "
 mkdir ../../out
 
 vagrant scp remote:/mnt/stemcells/$IAAS/$HYPERVISOR/$OS_NAME/work/work/*.tgz ../../out/
+
+
+
 
