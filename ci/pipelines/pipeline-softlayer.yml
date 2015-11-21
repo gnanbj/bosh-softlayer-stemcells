@@ -26,8 +26,8 @@ jobs:
     file: bosh-softlayer-stemcells/ci/build-stemcell.yml
     config:
       params:
-        BOSH_AWS_ACCESS_KEY_ID:     {{aws_builder_access_key}}
-        BOSH_AWS_SECRET_ACCESS_KEY: {{aws_builder_secret_access_key}}
+        BOSH_AWS_ACCESS_KEY_ID: AKIAJQHLGS77MPC62CKQ
+        BOSH_AWS_SECRET_ACCESS_KEY: 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
         BOSH_VAGRANT_KEY_PATH: ../../bosh-softlayer-private/bosh.pem
         IAAS: softlayer
         HYPERVISOR: hyperv

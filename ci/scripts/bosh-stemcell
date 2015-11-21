@@ -25,7 +25,8 @@
   vagrant ssh -c "
     cd /bosh
     bundle
-    CANDIDATE_BUILD_NUMBER=${build_num}
+    export CANDIDATE_BUILD_NUMBER=$build_num
+    export STEMCELL_BUILD_NUMBER=$build_num
     bundle exec rake stemcell:build[softlayer,hyperv,ubuntu,trusty,go,bosh-os-images,bosh-ubuntu-trusty-os-image.tgz]
   " remote
 

@@ -1,6 +1,7 @@
 groups:
 - name: all
   jobs:
+  - new-version
   - bosh-stemcell
   - convert-stemcell
   - create-light-stemcell
@@ -10,7 +11,6 @@ groups:
   - cpi-release-rc
   - cpi-release-shipit
   - import-stemcell
-  - stemcells-unit
   - sl-go-unit
   - sl-go-integration
   - cleanup-stemcells
@@ -30,11 +30,11 @@ groups:
   - cpi-release-shipit
 - name: bosh-softlayer-stemcells
   jobs:
+  - new-version
   - bosh-stemcell
   - convert-stemcell
   - create-light-stemcell
   - import-stemcell
-  - stemcells-unit
 - name: softlayer-go
   jobs:
   - sl-go-unit
@@ -496,12 +496,12 @@ resources:
     key: current-version
     secret_access_key: VeeX474VjIt8eojwkTzFT0vJfa7AsoTGcoq9Sxl2
 - name: stemcell-version
-  type: s3
+  type: semver
   source:
-    access_key_id: AKIAIZMHNZ5NZ4K5YNMA
+    key: stemcell-version
     bucket: dev-bosh-softlayer-cpi-stemcells
+    access_key_id: AKIAIZMHNZ5NZ4K5YNMA
     secret_access_key: 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
-    versioned_file: stemcell-version
 - name: softlayer-stemcell
   type: s3
   source:
@@ -526,14 +526,26 @@ resources:
   source:
     interval: 336h
 jobs:
+- name: new-version
+  plan:
+  - get: vsphere-stemcell
+  - get: bosh-softlayer-stemcells
+    trigger: true
+  - task: make-version
+    file: bosh-softlayer-stemcells/ci/make-stemcell-version.yml
+  - put: stemcell-version
+    params: {file: make-version/semver}
+
 - name: bosh-stemcell
   plan:
-  - aggregate:
-    - get: bosh
-    - get: bosh-softlayer-stemcells
-    - get: bosh-softlayer-private
-    - get: vsphere-stemcell
-      trigger: true
+  - get: bosh
+  - get: bosh-softlayer-stemcells
+    passed: [new-version]
+    trigger: true
+  - get: bosh-softlayer-private
+  - get: stemcell-version
+    passed: [new-version]
+    trigger: true
   - task: bosh-stemcell
     file: bosh-softlayer-stemcells/ci/bosh-stemcell.yml
     config:
@@ -544,9 +556,6 @@ jobs:
         BOSH_AWS_SECRET_ACCESS_KEY: +9774TJYXabLRaVM0yp/yTMGC2yB5aQ72nAnv8Nb
         BOSH_VAGRANT_KEY_PATH: ../../bosh-softlayer-private/bosh.pem
   - aggregate:
-    - put: stemcell-version
-      params:
-        from: out/stemcell-version
     - put: s3-vsphere-stemcell
       params:
         from: out/bosh-stemcell-.*-softlayer-.*\.tgz
@@ -765,13 +774,6 @@ jobs:
   - put: stemcell-info
     params:
       from: import-stemcell-image/stemcell-info.json
-- name: stemcells-unit
-  public: true
-  plan:
-  - get: bosh-softlayer-stemcells
-    trigger: true
-  - task: unit
-    file: bosh-softlayer-stemcells/ci/unit.yml
 - name: sl-go-unit
   public: true
   plan:
@@ -799,6 +801,7 @@ jobs:
 - name: cleanup-stemcells
   plan:
   - get: bosh-softlayer-stemcells
+    passed: [shipit]
   - get: timer-2weeks
     trigger: true
   - task: cleanup-stemcells-VGBTG
