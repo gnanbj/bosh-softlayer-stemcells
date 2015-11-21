@@ -1,36 +1,40 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-set -e -x
+(
+  set -e
 
-trap clean_vagrant EXIT
+  trap clean_vagrant EXIT
 
-clean_vagrant() {
-  vagrant destroy remote -f || true
-}
+  clean_vagrant() {
+    vagrant destroy remote -f || true
+  }
 
-build_num=$(cat stemcell-version/number | cut -f1 -d.)
+  echo -e "\n Get stemcell version... "
+  STEMCELL_VERSION=`cat vsphere-stemcell/version`
 
-cd bosh-src
+  build_num=$(cat stemcell-version/number | cut -f1 -d.)
 
-# todo check out correct version of bosh-src for that stemcell
-# git checkout stable-${build_num}
-# git submodule update --init --recursive
-# git clean -fdx
+  echo -e "\n Navigate to vagrant directory..."
+  cd bosh/bosh-stemcell
 
-cd bosh-stemcell
+  echo -e "\n Copy s3cfg to vagrant shared directory..."
+  cp ../../bosh-softlayer-private/.s3cfg .
 
-vagrant up remote --provider=aws
+  echo -e "\n Bring up vagrant stemcell building VM for AWS EC2-Classic..."
+  vagrant up remote --provider=aws
 
-vagrant ssh -c "
-  cd /bosh
-  bundle
-  export CANDIDATE_BUILD_NUMBER=$build_num
-  bundle exec rake stemcell:build[$IAAS,$HYPERVISOR,$OS_NAME,$OS_VERSION,go,bosh-os-images,bosh-$OS_NAME-$OS_VERSION-os-image.tgz]
-" remote
+  echo -e "\n Build stemcell, then upload to S3 bucket..."
+  vagrant ssh -c "
+    cd /bosh
+    bundle
+    CANDIDATE_BUILD_NUMBER=${build_num}
+    bundle exec rake stemcell:build[softlayer,hyperv,ubuntu,trusty,go,bosh-os-images,bosh-ubuntu-trusty-os-image.tgz]
+  " remote
 
-mkdir ../../out
+  mkdir ../../out
 
-vagrant scp remote:/mnt/stemcells/$IAAS/$HYPERVISOR/$OS_NAME/work/work/*.tgz ../../out/
+  vagrant scp remote:/mnt/stemcells/$IAAS/$HYPERVISOR/$OS_NAME/work/work/*.tgz ../../out/
+)
 
 
 
