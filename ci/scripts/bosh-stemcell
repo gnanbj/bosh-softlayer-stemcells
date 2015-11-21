@@ -1,7 +1,7 @@
 #!/bin/bash
 
 (
-  set -e
+  set -e -x
 
   trap clean_vagrant EXIT
 
@@ -10,8 +10,6 @@
   }
 
   echo -e "\n Get stemcell version... "
-  STEMCELL_VERSION=`cat vsphere-stemcell/version`
-
   build_num=$(cat stemcell-version/number | cut -f1 -d.)
 
   echo -e "\n Navigate to vagrant directory..."
