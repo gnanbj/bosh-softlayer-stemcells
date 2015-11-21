@@ -236,7 +236,7 @@ resources:
   source:
     access_key_id: AKIAIZMHNZ5NZ4K5YNMA
     bucket: dev-bosh-softlayer-cpi-stemcells
-    regexp: bosh-stemcell-(.*)-vsphere-esxi-ubuntu-trusty-go_agent\.tgz
+    regexp: bosh-stemcell-(.*)-softlayer-hyperv-ubuntu-trusty-go_agent\.tgz
     secret_access_key: VeeX474VjIt8eojwkTzFT0vJfa7AsoTGcoq9Sxl2
 - name: light-stemcell
   type: s3
@@ -507,7 +507,7 @@ resources:
   source:
     access_key_id: AKIAIZMHNZ5NZ4K5YNMA
     bucket: dev-bosh-softlayer-cpi-stemcells
-    regexp: bosh-stemcell-(.*)-vsphere-(.*).tgz
+    regexp: bosh-stemcell-(.*)-softlayer-(.*).tgz
     secret_access_key: VeeX474VjIt8eojwkTzFT0vJfa7AsoTGcoq9Sxl2
 - name: stemcell-info
   type: s3
@@ -519,7 +519,8 @@ resources:
 - name: vsphere-stemcell
   type: bosh-io-stemcell
   source:
-    name: bosh-vsphere-esxi-ubuntu-trusty-go_agent
+    name: bosh-softlayer-hyperv-ubuntu-trusty-go_agent
+    tarball: false
 - name: timer-2weeks
   type: time
   source:
@@ -548,7 +549,7 @@ jobs:
         from: out/stemcell-version
     - put: s3-vsphere-stemcell
       params:
-        from: out/bosh-stemcell-.*-vsphere-.*\.tgz
+        from: out/bosh-stemcell-.*-softlayer-.*\.tgz
 - name: convert-stemcell
   plan:
   - get: s3-vsphere-stemcell

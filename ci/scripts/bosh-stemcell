@@ -17,8 +17,6 @@ cd bosh-src
 # git submodule update --init --recursive
 # git clean -fdx
 
-bundle
-
 cd bosh-stemcell
 
 echo -e "\n Copy s3cfg to vagrant shared directory..."

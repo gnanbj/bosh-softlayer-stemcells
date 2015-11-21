@@ -3,11 +3,10 @@ jobs:
 - name: new-version
   plan:
   - get: published-stemcell
-  - get: bosh-src
   - get: bosh-softlayer-stemcells
     trigger: true
   - task: make-version
-    file: bosh-src/ci/pipelines/stemcells/tasks/make-stemcell-version.yml
+    file: bosh-softlayer-stemcells/ci/make-stemcell-version.yml
   - put: stemcell-version
     params: {file: make-version/semver}
 
