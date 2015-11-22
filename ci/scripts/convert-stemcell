@@ -10,6 +10,8 @@
   tar zxf final-stemcell-ubuntu-trusty/bosh-stemcell-${STEMCELL_VERSION}-softlayer-*.tgz
   tar zxf image
 
+  mv root.vhd bosh-stemcell-${STEMCELL_VERSION}-softlayer.vhd
+
   echo -e "\n Placing object in Softlayer..."
   swift -A https://${SWIFT_CLUSTER}.objectstorage.softlayer.net/auth/v1.0/ -U $SWIFT_USERNAME -K $SWIFT_API_KEY upload stemcells bosh-stemcell-${STEMCELL_VERSION}-softlayer.vhd
 
