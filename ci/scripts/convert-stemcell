@@ -1,19 +1,17 @@
 #!/bin/bash
 
 (
-  set -e
+  set -e -x
 
-  echo -e "\n Get stemcell version..."
-  STEMCELL_VERSION=`cat stemcell-version/semver`
+  STEMCELL_VERSION=$(cat stemcell-version/number | cut -f1 -d.)
 
-  echo -e "\n Unpacking tgz..."
   tar zxf final-stemcell-ubuntu-trusty/bosh-stemcell-${STEMCELL_VERSION}-softlayer-*.tgz
   tar zxf image
 
   mv root.vhd bosh-stemcell-${STEMCELL_VERSION}-softlayer.vhd
 
   echo -e "\n Placing object in Softlayer..."
-  swift -A https://${SWIFT_CLUSTER}.objectstorage.softlayer.net/auth/v1.0/ -U $SWIFT_USERNAME -K $SWIFT_API_KEY upload stemcells bosh-stemcell-${STEMCELL_VERSION}-softlayer.vhd
+  swift -A https://${SWIFT_CLUSTER}.objectstorage.softlayer.net/auth/v1.0/ -U $SWIFT_USERNAME -K $SWIFT_API_KEY upload ${SWIFT_CONTAINER} bosh-stemcell-${STEMCELL_VERSION}-softlayer.vhd
 
   echo -e "\n Setting the Expiration Tag two weeks from now."
   AUTH_TOKEN=`curl -i -H "X-Auth-User: $SWIFT_USERNAME " -H "X-Auth-Key: $SWIFT_API_KEY" https://$SWIFT_CLUSTER.objectstorage.softlayer.net/auth/v1.0/ | grep X-Auth-Token  | cut -d ":" -f2`

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 (
-  set -e
+  set -e -x
 
   base=$( cd "$( dirname "$( dirname "$( dirname "$0" )")")" && pwd )
   base_gopath=$( cd $base/../../../.. && pwd )
@@ -9,13 +9,13 @@
   export GOPATH=$base/Godeps/_workspace:$base_gopath:$GOPATH
 
   echo -e "\n Get stemcell version..."
-  STEMCELL_VERSION=`cat stemcell-version/semver`
+  STEMCELL_VERSION=$(cat stemcell-version/number | cut -f1 -d.)
 
   echo -e "\n Creating stemcell binary..."
   go build -o out/sl_stemcells github.com/maximilien/bosh-softlayer-stemcells/main
 
   echo -e "\n Softlayer create from external source..."
   IFS=':' read -ra OBJ_STORAGE_ACC_NAME <<< "$SWIFT_USERNAME"
-  URI="swift://${OBJ_STORAGE_ACC_NAME}@${SWIFT_CLUSTER}/stemcells/bosh-stemcell-${STEMCELL_VERSION}-softlayer.vhd"
+  URI="swift://${OBJ_STORAGE_ACC_NAME}@${SWIFT_CLUSTER}/${SWIFT_CONTAINER}/bosh-stemcell-${STEMCELL_VERSION}-softlayer.vhd"
   out/sl_stemcells --os-ref-code UBUNTU_14_64 --uri ${URI} import-image | tail -1 >> stemcell-info.json
 )

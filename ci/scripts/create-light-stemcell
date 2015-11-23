@@ -1,15 +1,14 @@
 #!/bin/bash
 
 (
-  set -e
+  set -e -x
  
   base=$( cd "$( dirname "$( dirname "$( dirname "$0" )")")" && pwd )
   base_gopath=$( cd $base/../../../.. && pwd )
 
   export GOPATH=$base/Godeps/_workspace:$base_gopath:$GOPATH
 
-  echo -e "\n Get stemcell version..."
-  STEMCELL_VERSION=`cat stemcell-version/semver`
+  STEMCELL_VERSION=$(cat stemcell-version/number | cut -f1 -d.)
 
   echo -e "\n Creating stemcell binary..."
   go build -o out/sl_stemcells github.com/maximilien/bosh-softlayer-stemcells/main
