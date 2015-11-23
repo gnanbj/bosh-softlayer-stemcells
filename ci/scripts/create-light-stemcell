@@ -14,6 +14,6 @@
   go build -o out/sl_stemcells github.com/maximilien/bosh-softlayer-stemcells/main
 
   echo -e "\n Softlayer create light stemcell..."
-  out/sl_stemcells --version $STEMCELL_VERSION --stemcell-info-filename stemcell-info/stemcell-info.json light-stemcell-for-softlayer-$STEMCELL_VERSION
+  out/sl_stemcells --version $STEMCELL_VERSION --stemcell-info-filename stemcell-info/stemcell-info.json
 
 )
