@@ -29,11 +29,31 @@
     export CANDIDATE_BUILD_NUMBER=$build_num
     export STEMCELL_BUILD_NUMBER=$build_num
     bundle exec rake stemcell:build[$IAAS,$HYPERVISOR,$OS_NAME,$OS_VERSION,go,bosh-os-images,bosh-$OS_NAME-$OS_VERSION-os-image.tgz]
+    cd tmp
+    md5sum *.tgz > files.md5
   " remote
 
   mkdir ../../out
 
-  vagrant scp remote:/mnt/stemcells/$IAAS/$HYPERVISOR/$OS_NAME/work/work/*.tgz ../../out/
+  vagrant scp remote:/bosh/tmp/files.md5 ../../out/
+  vagrant scp remote:/bosh/tmp/*.tgz ../../out/
+  pushd ../../out/
+    md5sum *.tgz | diff files.md5 -
+  popd
+
+  wget http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip && \
+    mkdir /usr/local/ec2 && \
+    unzip ec2-api-tools.zip -d /usr/local/ec2 && \
+    rm ec2-api-tools.zip
+
+  sudo apt-get -y install openjdk-7-jre
+
+  export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre
+  export EC2_HOME=/usr/local/ec2/ec2-api-tools-1.7.5.0
+  export PATH=$PATH:$EC2_HOME/bin
+
+  ec2-describe-instances --filter "key-name=bosh" | grep instance | awk '{print $3}' | xargs ec2-terminate-instances
+
 )
 
 
