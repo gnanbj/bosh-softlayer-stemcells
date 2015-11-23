@@ -9,19 +9,20 @@
     vagrant destroy remote -f || true
   }
 
-  echo -e "\n Get stemcell version... "
   build_num=$(cat stemcell-version/number | cut -f1 -d.)
 
-  echo -e "\n Navigate to vagrant directory..."
-  cd bosh-src/bosh-stemcell
+  cd bosh-src
 
-  echo -e "\n Copy s3cfg to vagrant shared directory..."
+  bundle
+
+  cd bosh-stemcell
+
   cp ../../bosh-softlayer-private/.s3cfg .
 
-  echo -e "\n Bring up vagrant stemcell building VM for AWS EC2-Classic..."
+  vagrant plugin install vagrant-scp
+
   vagrant up remote --provider=aws
 
-  echo -e "\n Build stemcell, then upload to S3 bucket..."
   vagrant ssh -c "
     cd /bosh
     bundle
