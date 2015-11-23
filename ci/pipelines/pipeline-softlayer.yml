@@ -67,6 +67,7 @@ jobs:
         SWIFT_USERNAME: {{SWIFT_USERNAME}}
         SWIFT_API_KEY: {{SWIFT_API_KEY}}
         SWIFT_CLUSTER: {{SWIFT_CLUSTER}}
+        SWIFT_CONTAINER: {{SWIFT_CONTAINER}}
         S3_ACCESS_KEY: {{s3-access-key-id}}
         S3_SECRET_KEY: {{s3-secret-access-key}}
 
@@ -86,6 +87,7 @@ jobs:
         SL_API_KEY: {{SL_API_KEY}}
         SWIFT_USERNAME: {{SWIFT_USERNAME}}
         SWIFT_CLUSTER: {{SWIFT_CLUSTER}}
+        SWIFT_CONTAINER: {{SWIFT_CONTAINER}}
         S3_ACCESS_KEY: {{s3-access-key-id}}
         S3_SECRET_KEY: {{s3-secret-access-key}}
   - put: stemcell-info
@@ -128,6 +130,7 @@ jobs:
         SWIFT_USERNAME: {{SWIFT_USERNAME}}
         SWIFT_API_KEY:  {{SWIFT_API_KEY}}
         SWIFT_CLUSTER:  {{SWIFT_CLUSTER}}
+        SWIFT_CONTAINER: {{SWIFT_CONTAINER}}
         S3_ACCESS_KEY:  {{s3-access-key-id}}
         S3_SECRET_KEY:  {{s3-secret-access-key}}
 
